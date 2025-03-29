@@ -62,7 +62,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Alert variant="outline" className="bg-blue-50">
+        <Alert className="bg-blue-50">
           <Info className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-xs text-blue-700">
             For demo purposes, this uses simulated data. In a production app, Twitter API would be accessed via a backend service.

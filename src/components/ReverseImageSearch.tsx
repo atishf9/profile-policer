@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getGoogleReverseImageSearchUrl } from "@/lib/twitterVerification";
-import { Search, ExternalLink, Image, Upload } from "lucide-react";
+import { Search, ExternalLink, Image as ImageIcon, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 const ReverseImageSearch = () => {
@@ -17,8 +17,8 @@ const ReverseImageSearch = () => {
       try {
         setIsSearching(true);
         
-        // Create a new Image to check if the URL is valid
-        const img = new Image();
+        // Create a new HTML Image element to check if the URL is valid
+        const img = new window.Image();
         img.onload = () => {
           // Image loaded successfully
           const url = getGoogleReverseImageSearchUrl(imageUrl);
@@ -73,7 +73,7 @@ const ReverseImageSearch = () => {
 
         <div className="text-sm text-muted-foreground mt-2">
           <div className="flex items-center gap-1 mb-2">
-            <Image className="h-4 w-4" />
+            <ImageIcon className="h-4 w-4" />
             <span>Example URLs: profile pictures, avatar images</span>
           </div>
           <div className="bg-muted p-2 rounded text-xs overflow-hidden">
