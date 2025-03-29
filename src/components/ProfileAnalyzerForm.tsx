@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Form,
@@ -17,6 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ExternalLink, Instagram, Facebook, Twitter } from "lucide-react";
 
 // Define the form schema
 const formSchema = z.object({
@@ -40,6 +41,7 @@ const formSchema = z.object({
     { message: "Must be a non-negative number" }
   ),
   profilePicture: z.enum(["yes", "no", "default"]),
+  platform: z.enum(["instagram", "facebook", "twitter"]),
 });
 
 type ProfileFormValues = z.infer<typeof formSchema>;
@@ -55,6 +57,34 @@ export type ProfileData = {
   profilePicture: "yes" | "no" | "default";
   timestamp: number;
   id: string;
+  platform: "instagram" | "facebook" | "twitter";
+  profileUrl: string;
+};
+
+const getPlatformBaseUrl = (platform: string): string => {
+  switch (platform) {
+    case "instagram":
+      return "https://www.instagram.com/";
+    case "facebook":
+      return "https://www.facebook.com/";
+    case "twitter":
+      return "https://twitter.com/";
+    default:
+      return "";
+  }
+};
+
+const getPlatformIcon = (platform: string) => {
+  switch (platform) {
+    case "instagram":
+      return <Instagram className="h-4 w-4" />;
+    case "facebook":
+      return <Facebook className="h-4 w-4" />;
+    case "twitter":
+      return <Twitter className="h-4 w-4" />;
+    default:
+      return null;
+  }
 };
 
 const ProfileAnalyzerForm = ({
@@ -63,6 +93,7 @@ const ProfileAnalyzerForm = ({
   onAnalyze: (data: ProfileData) => void;
 }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [fullProfileUrl, setFullProfileUrl] = useState("");
   const navigate = useNavigate();
 
   const form = useForm<ProfileFormValues>({
@@ -76,7 +107,21 @@ const ProfileAnalyzerForm = ({
       postCount: "0",
       accountAge: "0",
       profilePicture: "default",
+      platform: "instagram",
     },
+  });
+
+  // Update the profile URL when username or platform changes
+  const username = form.watch("username");
+  const platform = form.watch("platform");
+  
+  useState(() => {
+    if (username) {
+      const baseUrl = getPlatformBaseUrl(platform);
+      setFullProfileUrl(`${baseUrl}${username}`);
+    } else {
+      setFullProfileUrl("");
+    }
   });
 
   const onSubmit = (data: ProfileFormValues) => {
@@ -93,6 +138,8 @@ const ProfileAnalyzerForm = ({
         postCount: Number(data.postCount),
         accountAge: Number(data.accountAge),
         profilePicture: data.profilePicture,
+        platform: data.platform,
+        profileUrl: `${getPlatformBaseUrl(data.platform)}${data.username}`,
         timestamp: Date.now(),
         id: Math.random().toString(36).substring(2, 11),
       };
@@ -114,6 +161,49 @@ const ProfileAnalyzerForm = ({
     <div className="w-full max-w-xl">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="platform"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Social Media Platform</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex space-x-4"
+                  >
+                    <FormItem className="flex items-center space-x-2 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="instagram" id="instagram" />
+                      </FormControl>
+                      <FormLabel className="font-normal flex items-center gap-1" htmlFor="instagram">
+                        <Instagram className="h-4 w-4" /> Instagram
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-2 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="facebook" id="facebook" />
+                      </FormControl>
+                      <FormLabel className="font-normal flex items-center gap-1" htmlFor="facebook">
+                        <Facebook className="h-4 w-4" /> Facebook
+                      </FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-2 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="twitter" id="twitter" />
+                      </FormControl>
+                      <FormLabel className="font-normal flex items-center gap-1" htmlFor="twitter">
+                        <Twitter className="h-4 w-4" /> Twitter
+                      </FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -124,6 +214,19 @@ const ProfileAnalyzerForm = ({
                   <FormControl>
                     <Input placeholder="@username" {...field} />
                   </FormControl>
+                  {username && (
+                    <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                      <ExternalLink className="h-3 w-3" />
+                      <a 
+                        href={fullProfileUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hover:underline truncate"
+                      >
+                        {fullProfileUrl}
+                      </a>
+                    </div>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}

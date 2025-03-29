@@ -2,7 +2,7 @@
 import { ProfileData } from "./ProfileAnalyzerForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CalendarDays, MessageSquare, Users } from "lucide-react";
+import { CalendarDays, MessageSquare, Users, ExternalLink, Instagram, Facebook, Twitter } from "lucide-react";
 
 const ProfileSummary = ({ profile }: { profile: ProfileData }) => {
   // Generate a consistent avatar fallback based on display name
@@ -36,6 +36,36 @@ const ProfileSummary = ({ profile }: { profile: ProfileData }) => {
     }
   };
 
+  const getPlatformIcon = () => {
+    if (!profile.platform) return null;
+    
+    switch (profile.platform) {
+      case "instagram":
+        return <Instagram className="h-4 w-4" />;
+      case "facebook":
+        return <Facebook className="h-4 w-4" />;
+      case "twitter":
+        return <Twitter className="h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
+  const getPlatformName = () => {
+    if (!profile.platform) return "Social Media";
+    
+    switch (profile.platform) {
+      case "instagram":
+        return "Instagram";
+      case "facebook":
+        return "Facebook";
+      case "twitter":
+        return "Twitter";
+      default:
+        return "Social Media";
+    }
+  };
+
   const avatarContent = getAvatarContent();
 
   return (
@@ -52,7 +82,22 @@ const ProfileSummary = ({ profile }: { profile: ProfileData }) => {
           
           <div className="flex-1 space-y-2 text-center sm:text-left">
             <h3 className="text-xl font-bold">{profile.displayName}</h3>
-            <p className="text-sm text-muted-foreground">@{profile.username}</p>
+            <div className="flex items-center gap-1 justify-center sm:justify-start">
+              {getPlatformIcon()}
+              <p className="text-sm text-muted-foreground">
+                @{profile.username}
+                {profile.profileUrl && (
+                  <a 
+                    href={profile.profileUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center ml-1 text-primary hover:underline"
+                  >
+                    <ExternalLink className="h-3 w-3 ml-1" />
+                  </a>
+                )}
+              </p>
+            </div>
             
             {profile.bio ? (
               <p className="text-sm">{profile.bio}</p>

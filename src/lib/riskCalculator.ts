@@ -1,4 +1,3 @@
-
 import { ProfileData } from "@/components/ProfileAnalyzerForm";
 
 // Calculate an overall risk score based on the profile data
@@ -6,10 +5,11 @@ export const calculateOverallRisk = (profile: ProfileData): number => {
   // Initialize weights for different factors
   const weights = {
     username: 0.15,
-    profileCompleteness: 0.20,
-    followerRatio: 0.20,
-    activity: 0.25,
-    accountAge: 0.20
+    profileCompleteness: 0.15,
+    followerRatio: 0.15,
+    activity: 0.20,
+    accountAge: 0.15,
+    platformSpecific: 0.20
   };
 
   // Calculate individual risk factors
@@ -18,6 +18,7 @@ export const calculateOverallRisk = (profile: ProfileData): number => {
   const followerRatioRisk = calculateFollowerRatioRisk(profile.followerCount, profile.followingCount);
   const activityRisk = calculateActivityRisk(profile.postCount, profile.accountAge);
   const accountAgeRisk = calculateAgeRisk(profile.accountAge);
+  const platformSpecificRisk = calculatePlatformSpecificRisk(profile);
 
   // Calculate weighted average
   const overallRisk = (
@@ -25,7 +26,8 @@ export const calculateOverallRisk = (profile: ProfileData): number => {
     profileCompletenessRisk * weights.profileCompleteness +
     followerRatioRisk * weights.followerRatio +
     activityRisk * weights.activity +
-    accountAgeRisk * weights.accountAge
+    accountAgeRisk * weights.accountAge +
+    platformSpecificRisk * weights.platformSpecific
   );
 
   // Return rounded score
@@ -101,4 +103,30 @@ const calculateAgeRisk = (ageMonths: number): number => {
   if (ageMonths < 3) return 60;
   if (ageMonths < 6) return 40;
   return 20;
+};
+
+// Calculate platform specific risk
+const calculatePlatformSpecificRisk = (profile: ProfileData): number => {
+  if (!profile.platform) return 50;
+  
+  switch (profile.platform) {
+    case "instagram":
+      // Instagram specific signals
+      if (profile.followerCount > 10000 && profile.postCount < 10) return 85;
+      if (profile.followingCount > 5000 && profile.followerCount < 100) return 80;
+      if (/buy|follow|link|bio/.test(profile.bio.toLowerCase())) return 75;
+      return 40;
+    case "facebook":
+      // Facebook specific signals
+      if (profile.accountAge < 3 && profile.followerCount > 1000) return 90;
+      if (profile.postCount === 0 && profile.followingCount > 500) return 80;
+      return 50;
+    case "twitter":
+      // Twitter specific signals
+      if (profile.postCount > 1000 && profile.accountAge < 1) return 90;
+      if (profile.followingCount > 2000 && profile.followerCount < 100) return 85;
+      return 45;
+    default:
+      return 50;
+  }
 };

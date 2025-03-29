@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { ProfileData } from "./ProfileAnalyzerForm";
@@ -50,10 +49,79 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
         score: calculateAgeRisk(profile.accountAge),
         description: getAgeDescription(profile.accountAge),
         tooltip: "Newer accounts are generally higher risk than established ones"
+      },
+      {
+        name: `${getPlatformName(profile.platform)} Specific Patterns`,
+        score: calculatePlatformSpecificRisk(profile),
+        description: getPlatformSpecificDescription(profile),
+        tooltip: `Analyzes patterns specific to ${getPlatformName(profile.platform)} accounts`
       }
     ];
 
     return factors;
+  };
+
+  // Get platform name based on platform type
+  const getPlatformName = (platform?: string): string => {
+    if (!platform) return "Social Media";
+    
+    switch (platform) {
+      case "instagram":
+        return "Instagram";
+      case "facebook":
+        return "Facebook";
+      case "twitter":
+        return "Twitter";
+      default:
+        return "Social Media";
+    }
+  };
+
+  // Calculate platform specific risk
+  const calculatePlatformSpecificRisk = (profile: ProfileData): number => {
+    if (!profile.platform) return 50;
+    
+    switch (profile.platform) {
+      case "instagram":
+        // Instagram specific signals
+        if (profile.followerCount > 10000 && profile.postCount < 10) return 85;
+        if (profile.followingCount > 5000 && profile.followerCount < 100) return 80;
+        return 40;
+      case "facebook":
+        // Facebook specific signals
+        if (profile.accountAge < 3 && profile.friendCount > 1000) return 90;
+        return 50;
+      case "twitter":
+        // Twitter specific signals
+        if (profile.postCount > 1000 && profile.accountAge < 1) return 90;
+        return 45;
+      default:
+        return 50;
+    }
+  };
+
+  // Get platform specific description
+  const getPlatformSpecificDescription = (profile: ProfileData): string => {
+    if (!profile.platform) return "General social media patterns";
+    
+    switch (profile.platform) {
+      case "instagram":
+        if (profile.followerCount > 10000 && profile.postCount < 10) 
+          return "High follower count with very few posts is suspicious on Instagram";
+        if (profile.followingCount > 5000 && profile.followerCount < 100) 
+          return "Following many accounts but having few followers is a common pattern for fake Instagram accounts";
+        return "No suspicious Instagram-specific patterns detected";
+      case "facebook":
+        if (profile.accountAge < 3 && profile.friendCount > 1000) 
+          return "New Facebook account with unusually high friend count";
+        return "No suspicious Facebook-specific patterns detected";
+      case "twitter":
+        if (profile.postCount > 1000 && profile.accountAge < 1) 
+          return "New Twitter account with extremely high tweet volume";
+        return "No suspicious Twitter-specific patterns detected";
+      default:
+        return "General social media patterns";
+    }
   };
 
   // Calculate username risk (random-looking usernames score higher risk)
