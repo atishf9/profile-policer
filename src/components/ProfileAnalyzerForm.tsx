@@ -52,7 +52,7 @@ export type ProfileData = {
   followingCount: number;
   postCount: number;
   accountAge: number;
-  profilePicture: string;
+  profilePicture: "yes" | "no" | "default";
   timestamp: number;
   id: string;
 };
@@ -83,12 +83,16 @@ const ProfileAnalyzerForm = ({
     setIsAnalyzing(true);
     
     setTimeout(() => {
+      // Make sure all required fields are present for ProfileData
       const profileData: ProfileData = {
-        ...data,
+        username: data.username,
+        displayName: data.displayName,
+        bio: data.bio || "", // Ensure bio is never undefined
         followerCount: Number(data.followerCount),
         followingCount: Number(data.followingCount),
         postCount: Number(data.postCount),
         accountAge: Number(data.accountAge),
+        profilePicture: data.profilePicture,
         timestamp: Date.now(),
         id: Math.random().toString(36).substring(2, 11),
       };
