@@ -17,7 +17,6 @@ type RiskFactor = {
 };
 
 const RiskFactors = ({ profile }: { profile: ProfileData }) => {
-  // Calculate risk factors based on the profile data
   const calculateRiskFactors = (profile: ProfileData): RiskFactor[] => {
     const factors: RiskFactor[] = [
       {
@@ -61,7 +60,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return factors;
   };
 
-  // Get platform name based on platform type
   const getPlatformName = (platform?: string): string => {
     if (!platform) return "Social Media";
     
@@ -77,22 +75,18 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     }
   };
 
-  // Calculate platform specific risk
   const calculatePlatformSpecificRisk = (profile: ProfileData): number => {
     if (!profile.platform) return 50;
     
     switch (profile.platform) {
       case "instagram":
-        // Instagram specific signals
         if (profile.followerCount > 10000 && profile.postCount < 10) return 85;
         if (profile.followingCount > 5000 && profile.followerCount < 100) return 80;
         return 40;
       case "facebook":
-        // Facebook specific signals
-        if (profile.accountAge < 3 && profile.friendCount > 1000) return 90;
+        if (profile.accountAge < 3 && profile.followerCount > 1000) return 90;
         return 50;
       case "twitter":
-        // Twitter specific signals
         if (profile.postCount > 1000 && profile.accountAge < 1) return 90;
         return 45;
       default:
@@ -100,7 +94,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     }
   };
 
-  // Get platform specific description
   const getPlatformSpecificDescription = (profile: ProfileData): string => {
     if (!profile.platform) return "General social media patterns";
     
@@ -112,7 +105,7 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
           return "Following many accounts but having few followers is a common pattern for fake Instagram accounts";
         return "No suspicious Instagram-specific patterns detected";
       case "facebook":
-        if (profile.accountAge < 3 && profile.friendCount > 1000) 
+        if (profile.accountAge < 3 && profile.followerCount > 1000) 
           return "New Facebook account with unusually high friend count";
         return "No suspicious Facebook-specific patterns detected";
       case "twitter":
@@ -124,28 +117,24 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     }
   };
 
-  // Calculate username risk (random-looking usernames score higher risk)
   const calculateUsernameRisk = (username: string, displayName: string): number => {
     if (!username) return 90;
     
-    // Check for patterns indicating fake accounts
     const hasNumbers = /\d/.test(username);
     const hasRandomChars = /[_.\-]/.test(username);
     const isLong = username.length > 15;
     const nameMatch = displayName && username.toLowerCase().includes(displayName.toLowerCase());
     
-    // Calculate base score
     let score = 0;
     if (hasNumbers) score += 20;
     if (hasRandomChars) score += 15;
     if (isLong) score += 15;
     if (!nameMatch) score += 20;
-    if (/\d{4,}/.test(username)) score += 30; // Many sequential numbers
+    if (/\d{4,}/.test(username)) score += 30;
     
     return Math.min(score, 100);
   };
 
-  // Calculate profile completeness risk
   const calculateProfileCompletenessRisk = (profile: ProfileData): number => {
     let missingFields = 0;
     
@@ -158,7 +147,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return Math.min(score, 100);
   };
 
-  // Calculate follower/following ratio risk
   const calculateFollowerRatioRisk = (followers: number, following: number): number => {
     if (followers === 0 && following === 0) return 50;
     if (followers === 0) return 70;
@@ -166,27 +154,25 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     
     const ratio = following / followers;
     
-    if (ratio > 10) return 80; // Following many, few followers
+    if (ratio > 10) return 80;
     if (ratio > 5) return 60;
-    if (ratio < 0.1) return 70; // Many followers, following few (potential bot)
+    if (ratio < 0.1) return 70;
     
-    return 30; // Balanced ratio
+    return 30;
   };
 
-  // Calculate activity level risk
   const calculateActivityRisk = (posts: number, ageMonths: number): number => {
     if (ageMonths === 0) return 70;
     if (posts === 0) return 80;
     
     const postsPerMonth = posts / ageMonths;
     
-    if (postsPerMonth > 100) return 70; // Extremely high posting frequency
-    if (postsPerMonth < 0.5) return 60; // Very low activity
+    if (postsPerMonth > 100) return 70;
+    if (postsPerMonth < 0.5) return 60;
     
-    return 30; // Moderate activity
+    return 30;
   };
 
-  // Calculate account age risk
   const calculateAgeRisk = (ageMonths: number): number => {
     if (ageMonths === 0) return 90;
     if (ageMonths < 1) return 80;
@@ -195,7 +181,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return 20;
   };
 
-  // Get description for username risk
   const getUsernameRiskDescription = (username: string): string => {
     if (!username) return "No username provided";
     if (/\d{4,}/.test(username)) return "Contains many numbers (potential automated creation)";
@@ -204,7 +189,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return "Username appears normal";
   };
 
-  // Get description for profile completeness
   const getProfileCompletenessDescription = (profile: ProfileData): string => {
     if (!profile.bio && profile.profilePicture === "no") return "Missing bio and profile picture";
     if (!profile.bio) return "Missing or minimal bio information";
@@ -213,7 +197,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return "Profile is reasonably complete";
   };
 
-  // Get description for follower ratio
   const getFollowerRatioDescription = (followers: number, following: number): string => {
     if (followers === 0 && following === 0) return "No followers or following anyone";
     if (followers === 0) return "Following others but has no followers";
@@ -227,7 +210,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return "Balanced follower/following ratio";
   };
 
-  // Get description for activity
   const getActivityDescription = (posts: number, ageMonths: number): string => {
     if (posts === 0) return "No posts detected";
     if (ageMonths === 0) return "Brand new account";
@@ -240,7 +222,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return `Normal activity level (${Math.round(postsPerMonth)} posts/month)`;
   };
 
-  // Get description for account age
   const getAgeDescription = (ageMonths: number): string => {
     if (ageMonths === 0) return "Brand new account";
     if (ageMonths < 1) return "Account less than a month old";
@@ -249,7 +230,6 @@ const RiskFactors = ({ profile }: { profile: ProfileData }) => {
     return `Established account (${ageMonths} months old)`;
   };
 
-  // Get color based on score
   const getScoreColor = (score: number) => {
     if (score < 30) return "text-detection-safe";
     if (score < 70) return "text-detection-warning";

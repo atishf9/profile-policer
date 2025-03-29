@@ -7,11 +7,15 @@ import RiskScore from "@/components/RiskScore";
 import ProfileSummary from "@/components/ProfileSummary";
 import RiskFactors from "@/components/RiskFactors";
 import RecommendedActions from "@/components/RecommendedActions";
+import TwitterVerification from "@/components/TwitterVerification";
+import ReverseImageSearch from "@/components/ReverseImageSearch";
 import { calculateOverallRisk } from "@/lib/riskCalculator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   const [analyzedProfile, setAnalyzedProfile] = useState<ProfileData | null>(null);
   const [isResultVisible, setIsResultVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState("form");
 
   useEffect(() => {
     // Check if there's a profile in local storage from the history view
@@ -37,6 +41,7 @@ const Index = () => {
 
   const handleNewAnalysis = () => {
     setIsResultVisible(false);
+    setActiveTab("form");
     
     // Small delay before scrolling to top
     setTimeout(() => {
@@ -57,11 +62,34 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="flex justify-center my-8">
-            {!isResultVisible && (
-              <ProfileAnalyzerForm onAnalyze={handleAnalyze} />
-            )}
-          </div>
+          {!isResultVisible && (
+            <div className="flex justify-center my-8">
+              <Tabs 
+                defaultValue="form" 
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full max-w-xl"
+              >
+                <TabsList className="grid grid-cols-3 mb-8">
+                  <TabsTrigger value="form">Manual Analysis</TabsTrigger>
+                  <TabsTrigger value="twitter">Twitter Verify</TabsTrigger>
+                  <TabsTrigger value="image">Image Search</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="form">
+                  <ProfileAnalyzerForm onAnalyze={handleAnalyze} />
+                </TabsContent>
+                
+                <TabsContent value="twitter">
+                  <TwitterVerification onVerified={handleAnalyze} />
+                </TabsContent>
+                
+                <TabsContent value="image">
+                  <ReverseImageSearch />
+                </TabsContent>
+              </Tabs>
+            </div>
+          )}
           
           {isResultVisible && analyzedProfile && (
             <div id="results" className="space-y-6 pt-6">

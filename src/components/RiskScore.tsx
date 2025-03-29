@@ -59,7 +59,11 @@ const RiskScore = ({ score, className }: RiskScoreProps) => {
 
       <div className="relative w-full h-3 overflow-hidden rounded-full">
         <div className="absolute inset-0 risk-meter-gradient"></div>
-        <Progress value={showScore} className="h-3 bg-transparent" indicatorClassName="bg-transparent border-r-2 border-r-white" />
+        <Progress 
+          value={showScore} 
+          className="h-3 bg-transparent" 
+          // Remove the indicatorClassName prop since it's not supported
+        />
       </div>
 
       <div className="flex justify-between mt-1">
