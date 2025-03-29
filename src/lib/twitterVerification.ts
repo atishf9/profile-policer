@@ -25,30 +25,68 @@ export const verifyTwitterProfile = async (username: string): Promise<{
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    // Generate consistent mock data based on username
-    const nameParts = username.split(/[_.\d]+/);
-    const displayName = nameParts.map(part => 
-      part.charAt(0).toUpperCase() + part.slice(1)
-    ).join(' ').trim() || username;
+    // Define mock users with consistent data
+    const mockUsers: Record<string, Partial<ProfileData>> = {
+      "elonmusk": {
+        displayName: "Elon Musk",
+        bio: "Technoking of Tesla, Chief Twit of Twitter",
+        followerCount: 158700000,
+        followingCount: 678,
+        postCount: 31700,
+        accountAge: 15,
+        profilePicture: "yes"
+      },
+      "barackobama": {
+        displayName: "Barack Obama",
+        bio: "Dad, husband, President, citizen.",
+        followerCount: 132800000,
+        followingCount: 569,
+        postCount: 16400,
+        accountAge: 14,
+        profilePicture: "yes"
+      },
+      "billgates": {
+        displayName: "Bill Gates",
+        bio: "Co-chair of the Bill & Melinda Gates Foundation.",
+        followerCount: 59900000,
+        followingCount: 283,
+        postCount: 4200,
+        accountAge: 13,
+        profilePicture: "yes"
+      },
+      "narendramodi": {
+        displayName: "Narendra Modi",
+        bio: "Prime Minister of India",
+        followerCount: 90700000,
+        followingCount: 2450,
+        postCount: 37500,
+        accountAge: 12,
+        profilePicture: "yes"
+      },
+      // Default case for any other username
+      "default": {
+        displayName: username.charAt(0).toUpperCase() + username.slice(1),
+        bio: `This is a simulated profile for ${username}.`,
+        followerCount: 1250,
+        followingCount: 843,
+        postCount: 267,
+        accountAge: 3,
+        profilePicture: "yes"
+      }
+    };
     
-    // Use username to generate consistent numbers
-    const usernameHash = [...username].reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    // Create mock profile data - use predefined if available, otherwise use default
+    const mockData = mockUsers[username.toLowerCase()] || mockUsers.default;
     
-    const followerCount = Math.floor((usernameHash % 1000) * 10) + 50;
-    const followingCount = Math.floor((usernameHash % 500) * 5) + 100;
-    const tweetCount = Math.floor((usernameHash % 300) * 20) + 30;
-    const accountAge = Math.floor((usernameHash % 36) + 1);
-    
-    // Create mock profile data
     const profileData: ProfileData = {
       username: username,
-      displayName: displayName,
-      bio: `This is a simulated Twitter profile for ${displayName}. #TwitterUser`,
-      followerCount: followerCount,
-      followingCount: followingCount,
-      postCount: tweetCount,
-      accountAge: accountAge,
-      profilePicture: "yes",
+      displayName: mockData.displayName || username,
+      bio: mockData.bio || `This is a simulated Twitter profile.`,
+      followerCount: mockData.followerCount || 500,
+      followingCount: mockData.followingCount || 300,
+      postCount: mockData.postCount || 100,
+      accountAge: mockData.accountAge || 2,
+      profilePicture: mockData.profilePicture || "yes",
       platform: "twitter",
       profileUrl: `https://twitter.com/${username}`,
       timestamp: Date.now(),
@@ -80,4 +118,3 @@ export const verifyTwitterProfile = async (username: string): Promise<{
 export const getGoogleReverseImageSearchUrl = (imageUrl: string): string => {
   return `https://www.google.com/searchbyimage?image_url=${encodeURIComponent(imageUrl)}`;
 };
-
