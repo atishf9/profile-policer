@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertCircle, Twitter, ExternalLink } from "lucide-react";
+import { Loader2, AlertCircle, Twitter, ExternalLink, Info } from "lucide-react";
 import { verifyTwitterProfile } from "@/lib/twitterVerification";
 import { ProfileData } from "./ProfileAnalyzerForm";
+import { toast } from "sonner";
 
 type TwitterVerificationProps = {
   onVerified: (profileData: ProfileData) => void;
@@ -23,20 +24,30 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
       return;
     }
 
+    // Remove @ if included
+    const cleanUsername = username.startsWith('@') ? username.substring(1) : username;
+    
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await verifyTwitterProfile(username);
+      const result = await verifyTwitterProfile(cleanUsername);
       
       if (result.success && result.profileData) {
         onVerified(result.profileData);
+        toast.success("Profile analysis complete!");
       } else {
         setError(result.error || "Failed to verify Twitter profile");
+        toast.error("Verification failed", {
+          description: result.error || "Failed to verify Twitter profile"
+        });
       }
     } catch (err) {
       setError("An error occurred during verification");
       console.error(err);
+      toast.error("Verification error", {
+        description: "An unexpected error occurred"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -51,8 +62,15 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <Alert variant="outline" className="bg-blue-50">
+          <Info className="h-4 w-4 text-blue-500" />
+          <AlertDescription className="text-xs text-blue-700">
+            For demo purposes, this uses simulated data. In a production app, Twitter API would be accessed via a backend service.
+          </AlertDescription>
+        </Alert>
+        
         <p className="text-sm text-muted-foreground">
-          Verify a Twitter profile using the Twitter API to analyze authenticity.
+          Enter a Twitter username to analyze account authenticity.
         </p>
         
         <div className="flex gap-2">
@@ -60,7 +78,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter Twitter username"
+              placeholder="Enter Twitter username (without @)"
               className="w-full"
             />
           </div>
