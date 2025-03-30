@@ -17,6 +17,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
   const [username, setUsername] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewData, setPreviewData] = useState<Partial<ProfileData> | null>(null);
 
   const handleVerify = async () => {
     if (!username) {
@@ -34,6 +35,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
       const result = await verifyTwitterProfile(cleanUsername);
       
       if (result.success && result.profileData) {
+        setPreviewData(result.profileData);
         onVerified(result.profileData);
         toast.success("Profile analysis complete!");
       } else {
@@ -124,21 +126,59 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </div>
 
         <div className="grid grid-cols-4 gap-2 pt-2">
-          {["followers", "following", "posts", "years"].map((stat, i) => (
-            <div 
-              key={stat} 
-              className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in" 
-              style={{ animationDelay: `${i * 100}ms` }}
-            >
-              <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
-                {stat === "followers" && <Users className="h-3 w-3" />}
-                {stat === "following" && <User className="h-3 w-3" />}
-                {stat === "posts" && <MessageSquare className="h-3 w-3" />}
-                {stat === "years" && <Calendar className="h-3 w-3" />}
+          {previewData ? (
+            // Display actual data from API response
+            <>
+              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in">
+                <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                  <Users className="h-3 w-3" />
+                </div>
+                <div className="text-xs font-medium">{previewData.followerCount?.toLocaleString()}</div>
+                <div className="text-xs capitalize">followers</div>
               </div>
-              <div className="text-xs capitalize">{stat}</div>
-            </div>
-          ))}
+              
+              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in">
+                <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                  <User className="h-3 w-3" />
+                </div>
+                <div className="text-xs font-medium">{previewData.followingCount?.toLocaleString()}</div>
+                <div className="text-xs capitalize">following</div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in">
+                <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                  <MessageSquare className="h-3 w-3" />
+                </div>
+                <div className="text-xs font-medium">{previewData.postCount?.toLocaleString()}</div>
+                <div className="text-xs capitalize">posts</div>
+              </div>
+              
+              <div className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in">
+                <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                  <Calendar className="h-3 w-3" />
+                </div>
+                <div className="text-xs font-medium">{previewData.accountAge}</div>
+                <div className="text-xs capitalize">years</div>
+              </div>
+            </>
+          ) : (
+            // Empty placeholders
+            ["followers", "following", "posts", "years"].map((stat, i) => (
+              <div 
+                key={stat} 
+                className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in" 
+                style={{ animationDelay: `${i * 100}ms` }}
+              >
+                <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                  {stat === "followers" && <Users className="h-3 w-3" />}
+                  {stat === "following" && <User className="h-3 w-3" />}
+                  {stat === "posts" && <MessageSquare className="h-3 w-3" />}
+                  {stat === "years" && <Calendar className="h-3 w-3" />}
+                </div>
+                <div className="text-xs capitalize">{stat}</div>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>
