@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, AlertCircle, Twitter, ExternalLink, Info } from "lucide-react";
+import { Loader2, AlertCircle, Twitter, ExternalLink, Info, Search, User, Calendar, MessageSquare, Users } from "lucide-react";
 import { verifyTwitterProfile } from "@/lib/twitterVerification";
 import { ProfileData } from "./ProfileAnalyzerForm";
 import { toast } from "sonner";
@@ -54,17 +54,17 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
   };
 
   return (
-    <Card className="w-full max-w-xl">
-      <CardHeader>
+    <Card className="w-full max-w-xl overflow-hidden border-none shadow-lg animate-fade-in bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-blue-950">
+      <CardHeader className="bg-gradient-to-r from-[#1DA1F2] to-blue-600 text-white">
         <CardTitle className="flex items-center gap-2">
-          <Twitter className="h-5 w-5 text-[#1DA1F2]" />
-          Twitter Verification
+          <Twitter className="h-6 w-6 text-white animate-pulse-scale" />
+          Twitter Profile Verification
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <Alert className="bg-blue-50">
+      <CardContent className="space-y-4 p-6">
+        <Alert className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 animate-fade-in">
           <Info className="h-4 w-4 text-blue-500" />
-          <AlertDescription className="text-xs text-blue-700">
+          <AlertDescription className="text-xs text-blue-700 dark:text-blue-300">
             For demo purposes, this uses simulated data. Try usernames like: elonmusk, barackobama, billgates, cristiano, ladygaga
           </AlertDescription>
         </Alert>
@@ -74,18 +74,22 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </p>
         
         <div className="flex gap-2">
-          <div className="flex-1">
+          <div className="flex-1 relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+              <Search className="h-4 w-4" />
+            </div>
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter Twitter username (without @)"
-              className="w-full"
+              className="w-full pl-9 ring-offset-background focus-visible:ring-2 focus-visible:ring-offset-2 transition-all border-blue-200 hover:border-blue-300 focus:border-blue-400"
+              onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
             />
           </div>
           <Button 
             onClick={handleVerify} 
             disabled={isLoading}
-            className="bg-[#1DA1F2] hover:bg-[#1a94df]"
+            className="bg-[#1DA1F2] hover:bg-[#1a94df] shadow-sm hover:shadow transition-all"
           >
             {isLoading ? (
               <>
@@ -99,7 +103,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </div>
         
         {error && (
-          <Alert>
+          <Alert className="border-red-200 bg-red-50 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300 animate-fade-in">
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -112,11 +116,29 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
               href={`https://twitter.com/${username}`} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:underline truncate"
+              className="hover:underline truncate text-blue-600 dark:text-blue-400 transition-colors"
             >
               {username && `https://twitter.com/${username}`}
             </a>
           </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-2 pt-2">
+          {["followers", "following", "posts", "years"].map((stat, i) => (
+            <div 
+              key={stat} 
+              className="bg-white dark:bg-gray-800 p-2 rounded-lg shadow-sm text-center border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow animate-fade-in" 
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <div className="text-gray-500 dark:text-gray-400 flex justify-center mb-1">
+                {stat === "followers" && <Users className="h-3 w-3" />}
+                {stat === "following" && <User className="h-3 w-3" />}
+                {stat === "posts" && <MessageSquare className="h-3 w-3" />}
+                {stat === "years" && <Calendar className="h-3 w-3" />}
+              </div>
+              <div className="text-xs capitalize">{stat}</div>
+            </div>
+          ))}
         </div>
       </CardContent>
     </Card>
