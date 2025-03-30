@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -19,7 +18,6 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("form");
 
   useEffect(() => {
-    // Check if there's a profile in local storage from the history view
     const storedProfile = localStorage.getItem("currentProfile");
     if (storedProfile) {
       const profile = JSON.parse(storedProfile);
@@ -32,10 +30,8 @@ const Index = () => {
   const handleAnalyze = (data: ProfileData) => {
     setAnalyzedProfile(data);
     
-    // Small delay before showing results for UX
     setTimeout(() => {
       setIsResultVisible(true);
-      // Scroll to results
       document.getElementById("results")?.scrollIntoView({ behavior: "smooth" });
     }, 500);
   };
@@ -44,18 +40,17 @@ const Index = () => {
     setIsResultVisible(false);
     setActiveTab("form");
     
-    // Small delay before scrolling to top
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 100);
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen animated-gradient-bg animated-particle-bg">
       <Header />
       
-      <main className="flex-1 container px-4 py-8">
-        <section className="max-w-4xl mx-auto mb-12">
+      <main className="flex-1 container px-4 py-8 relative z-10">
+        <section className="max-w-4xl mx-auto mb-12 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-2 md:text-4xl">Fake Account Detector</h1>
             <p className="text-lg text-muted-foreground">
