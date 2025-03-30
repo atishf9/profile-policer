@@ -29,12 +29,13 @@ export const verifyTwitterProfile = async (username: string): Promise<{
     const mockUsers: Record<string, Partial<ProfileData>> = {
       "elonmusk": {
         displayName: "Elon Musk",
-        bio: "Technoking of Tesla, Chief Twit of Twitter",
+        bio: "Chief Technology Officer of Civilization, Chief Twit of Twitter",
         followerCount: 158700000,
         followingCount: 678,
         postCount: 31700,
         accountAge: 15,
-        profilePicture: "yes"
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/elonmusk"
       },
       "barackobama": {
         displayName: "Barack Obama",
@@ -43,7 +44,8 @@ export const verifyTwitterProfile = async (username: string): Promise<{
         followingCount: 569,
         postCount: 16400,
         accountAge: 14,
-        profilePicture: "yes"
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/BarackObama"
       },
       "billgates": {
         displayName: "Bill Gates",
@@ -52,7 +54,8 @@ export const verifyTwitterProfile = async (username: string): Promise<{
         followingCount: 283,
         postCount: 4200,
         accountAge: 13,
-        profilePicture: "yes"
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/BillGates"
       },
       "narendramodi": {
         displayName: "Narendra Modi",
@@ -61,7 +64,38 @@ export const verifyTwitterProfile = async (username: string): Promise<{
         followingCount: 2450,
         postCount: 37500,
         accountAge: 12,
-        profilePicture: "yes"
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/narendramodi"
+      },
+      "cristiano": {
+        displayName: "Cristiano Ronaldo",
+        bio: "This is my official Twitter account.",
+        followerCount: 108500000,
+        followingCount: 571,
+        postCount: 4390,
+        accountAge: 14,
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/cristiano"
+      },
+      "lebronjames": {
+        displayName: "LeBron James",
+        bio: "Just a kid from Akron.",
+        followerCount: 52300000,
+        followingCount: 789,
+        postCount: 7850,
+        accountAge: 15,
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/KingJames"
+      },
+      "ladygaga": {
+        displayName: "Lady Gaga",
+        bio: "Mother Monster",
+        followerCount: 84600000,
+        followingCount: 121256,
+        postCount: 10700,
+        accountAge: 13,
+        profilePicture: "yes",
+        profileUrl: "https://twitter.com/ladygaga"
       },
       // Default case for any other username
       "default": {
@@ -71,7 +105,8 @@ export const verifyTwitterProfile = async (username: string): Promise<{
         followingCount: 843,
         postCount: 267,
         accountAge: 3,
-        profilePicture: "yes"
+        profilePicture: "yes",
+        profileUrl: `https://twitter.com/${username}`
       }
     };
     
@@ -88,7 +123,7 @@ export const verifyTwitterProfile = async (username: string): Promise<{
       accountAge: mockData.accountAge || 2,
       profilePicture: mockData.profilePicture || "yes",
       platform: "twitter",
-      profileUrl: `https://twitter.com/${username}`,
+      profileUrl: mockData.profileUrl || `https://twitter.com/${username}`,
       timestamp: Date.now(),
       id: Math.random().toString(36).substring(2, 11),
     };

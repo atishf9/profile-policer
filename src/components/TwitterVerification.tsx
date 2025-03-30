@@ -65,7 +65,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         <Alert className="bg-blue-50">
           <Info className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-xs text-blue-700">
-            For demo purposes, this uses simulated data. In a production app, Twitter API would be accessed via a backend service.
+            For demo purposes, this uses simulated data. Try usernames like: elonmusk, barackobama, billgates, cristiano, ladygaga
           </AlertDescription>
         </Alert>
         
@@ -99,7 +99,7 @@ const TwitterVerification = ({ onVerified }: TwitterVerificationProps) => {
         </div>
         
         {error && (
-          <Alert variant="destructive">
+          <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
