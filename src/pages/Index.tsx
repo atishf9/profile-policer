@@ -9,6 +9,7 @@ import RiskFactors from "@/components/RiskFactors";
 import RecommendedActions from "@/components/RecommendedActions";
 import TwitterVerification from "@/components/TwitterVerification";
 import ReverseImageSearch from "@/components/ReverseImageSearch";
+import ChatBot from "@/components/ChatBot";
 import { calculateOverallRisk } from "@/lib/riskCalculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -121,6 +122,7 @@ const Index = () => {
       </main>
       
       <Footer />
+      <ChatBot />
     </div>
   );
 };

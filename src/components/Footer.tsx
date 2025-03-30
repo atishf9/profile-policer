@@ -1,5 +1,5 @@
 
-import { Shield } from "lucide-react";
+import { Shield, ExternalLink } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -9,6 +9,46 @@ const Footer = () => {
           <Shield size={20} className="text-primary" />
           <span className="text-sm font-semibold">ProfilePolicer</span>
         </div>
+        
+        <div className="flex flex-wrap justify-center gap-4 max-w-2xl">
+          <a 
+            href="https://cybercrime.gov.in/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Report to Cyber Crime Portal
+          </a>
+          <a 
+            href="https://www.identitytheft.gov/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" />
+            FTC Identity Theft
+          </a>
+          <a 
+            href="https://www.facebook.com/help/1216349518398524" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Report Fake Accounts on Facebook
+          </a>
+          <a 
+            href="https://help.twitter.com/en/safety-and-security/report-abusive-behavior" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            <ExternalLink className="h-3 w-3" />
+            Report on Twitter
+          </a>
+        </div>
+        
         <p className="text-center text-xs text-muted-foreground">
           This tool provides an estimation of profile authenticity based on common indicators.
           <br />
